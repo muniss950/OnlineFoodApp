@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Menu</title>
+    <link rel="stylesheet" href="/css/style.css">
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Manage Menu</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications"> Notifications </a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Add New Menu Item</h2>
+        <form th:action="@{/admin/menu/add}" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="available">Available:</label>
+                <input type="checkbox" id="available" name="available">
+            </div>
+            <button type="submit">Add Item</button>
+        </form>
+        
+        <h2>Menu Items</h2>
+        <div class="menu-items">
+            <div class="menu-item" th:each="item : ${menuItems}">
+                <!-- v1<form th:action="@{/admin/menu/update/{id}(id=${item.id})}" method="post">
+                    <h3><input type="text" th:value="${item.name}" name="name" required></h3>
+                    <p><input type="text" th:value="${item.description}" name="description" required></p>
+                    <p>$<input type="number" th:value="${item.price}" name="price" step="0.01" min="0" required></p>
+                    <label>
+                        Available: <input type="checkbox" name="available" th:checked="${item.available}">
+                    </label>
+                    <button type="submit">Update</button>
+                </form> -->
+                <form th:action="@{/admin/menu/update/{id}(id=${item.id})}" method="post">
+                    <h3><input type="text" th:value="${item.name}" name="name" required></h3>
+                    <p><input type="text" th:value="${item.description}" name="description" required></p>
+                    <p>$<input type="number" th:value="${item.price}" name="price" step="0.01" min="0" required></p>
+                    <p>
+                        Discount (%): 
+                        <input type="number" th:value="${item.discountPercentage}" name="discountPercentage" step="0.01" min="0" max="100" required>
+                    </p>
+                    <label>
+                        Available: <input type="checkbox" name="available" th:checked="${item.available}">
+                    </label>
+                    <button type="submit">Update</button>
+                </form>
+                
+                <a th:href="@{/admin/menu/delete/{id}(id=${item.id})}">Delete</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

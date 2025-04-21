@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Orders</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Manage Orders</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications"> Notifications </a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Pending Orders</h2>
+        <div class="orders">
+            <div class="order" th:each="order : ${orders}">
+                <h3>Order #<span th:text="${order.id}"></span></h3>
+                <p>Customer: <span th:text="${order.user.username}"></span></p>
+                <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                <form th:action="@{/admin/orders/assign}" method="post">
+                    <input type="hidden" name="orderId" th:value="${order.id}">
+                    <select name="agentId" required>
+                        <option value="">Select Delivery Agent</option>
+                        <option th:each="agent : ${agents}" 
+                                th:value="${agent.id}" 
+                                th:text="${agent.name} + ' (' + ${agent.phone} + ')'">
+                        </option>
+                    </select>
+                    <button type="submit">Assign</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

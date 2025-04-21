@@ -1,0 +1,393 @@
+<!-- <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Agent Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Food Delivery System</h1>
+        <div>
+            <span th:text="${'Welcome, ' + session.deliveryAgent.name}"></span>
+            <a href="/auth/logout" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/delivery_agent/dashboard">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="assigned-orders">
+            <h2>New Orders Assigned To You</h2>
+            <div th:if="${assignedOrders.empty}" class="empty-message">
+                No new orders assigned to you.
+            </div>
+            <div class="orders" th:unless="${assignedOrders.empty}">
+                <div class="order" th:each="order : ${assignedOrders}">
+                    <h3>Order #<span th:text="${order.id}"></span></h3>
+                    <p>Customer: <span th:text="${order.user.username}"></span></p>
+                    <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                    <p>Status: <span th:text="${order.status}"></span></p>
+                    <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span></p>
+                    
+                    <div class="order-actions">
+                        <form th:action="@{/delivery_agent/accept-order}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="accept-btn">Accept Order</button>
+                        </form>
+                        <form th:action="@{/delivery_agent/reject-order}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="reject-btn">Reject Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="accepted-orders">
+            <h2>Your Active Deliveries</h2>
+            <div th:if="${acceptedOrders.empty}" class="empty-message">
+                No active deliveries.
+            </div>
+            <div class="orders" th:unless="${acceptedOrders.empty}">
+                <div class="order" th:each="order : ${acceptedOrders}">
+                    <h3>Order #<span th:text="${order.id}"></span></h3>
+                    <p>Customer: <span th:text="${order.user.username}"></span></p>
+                    <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                    <p>Status: <span th:text="${order.status}"></span></p>
+                    <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span></p>
+                    
+                    <div class="order-actions">
+                        <form th:action="@{/delivery_agent/mark-delivered}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="deliver-btn">Mark as Delivered</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <style>
+        /* Additional styles for delivery agent dashboard */
+        .empty-message {
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .order {
+            margin-bottom: 1.5rem;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .order h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .order p {
+            margin: 0.5rem 0;
+        }
+        
+        .order-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .accept-btn {
+            background: #4CAF50;
+        }
+        
+        .accept-btn:hover {
+            background: #45a049;
+        }
+        
+        .reject-btn {
+            background: #f44336;
+        }
+        
+        .reject-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .deliver-btn {
+            background: #2196F3;
+        }
+        
+        .deliver-btn:hover {
+            background: #0b7dda;
+        }
+        
+        section {
+            margin-bottom: 2rem;
+        }
+        
+        section h2 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 0.5rem;
+        }
+        
+        .logout-btn {
+            margin-left: 1rem;
+            background: #666;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+        
+        .logout-btn:hover {
+            background: #555;
+        }
+    </style>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Agent Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+    <style>
+        /* Header styles */
+        .top-bar {
+            background-color: #000;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .app-brand {
+            display: flex;
+            align-items: baseline;
+        }
+        .app-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(to right, #ff6b6b, #ffa3a3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .welcome-message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+        }
+        .logout-btn {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+            border: 1px solid #ff6b6b;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #ff6b6b;
+            color: black;
+        }
+        
+        /* Navigation styles */
+        nav {
+            background-color: #333;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        .badge {
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        /* Main content styles */
+        .empty-message {
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .order {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .order h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        
+        .order p {
+            margin: 0.5rem 0;
+        }
+        
+        .order-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        button {
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .accept-btn {
+            background: #4CAF50;
+        }
+        
+        .accept-btn:hover {
+            background: #45a049;
+        }
+        
+        .reject-btn {
+            background: #f44336;
+        }
+        
+        .reject-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .deliver-btn {
+            background: #2196F3;
+        }
+        
+        .deliver-btn:hover {
+            background: #0b7dda;
+        }
+        
+        section {
+            margin-bottom: 2rem;
+            padding: 0 20px;
+        }
+        
+        section h2 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="app-brand">
+            <h1 class="app-title">Dishpatch</h1>
+        </div>
+        <div>
+            <span class="welcome-message">Welcome, <span th:text="${session.deliveryAgent.name}"></span>!</span>
+            <a href="/auth/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="/delivery_agent/dashboard">Dashboard</a></li>
+            <li>
+                <a href="/delivery_agent/notifications">Notifications
+                    <span th:if="${unreadCount > 0}" class="badge">
+                        <span th:text="${unreadCount}"></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="assigned-orders">
+            <h2>New Orders Assigned To You</h2>
+            <div th:if="${assignedOrders.empty}" class="empty-message">
+                No new orders assigned to you.
+            </div>
+            <div class="orders" th:unless="${assignedOrders.empty}">
+                <div class="order" th:each="order : ${assignedOrders}">
+                    <h3>Order #<span th:text="${order.id}"></span></h3>
+                    <p>Customer: <span th:text="${order.user.username}"></span></p>
+                    <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                    <p>Status: <span th:text="${order.status}"></span></p>
+                    <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span></p>
+                    
+                    <div class="order-actions">
+                        <form th:action="@{/delivery_agent/accept-order}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="accept-btn">Accept Order</button>
+                        </form>
+                        <form th:action="@{/delivery_agent/reject-order}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="reject-btn">Reject Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="accepted-orders">
+            <h2>Your Active Deliveries</h2>
+            <div th:if="${acceptedOrders.empty}" class="empty-message">
+                No active deliveries.
+            </div>
+            <div class="orders" th:unless="${acceptedOrders.empty}">
+                <div class="order" th:each="order : ${acceptedOrders}">
+                    <h3>Order #<span th:text="${order.id}"></span></h3>
+                    <p>Customer: <span th:text="${order.user.username}"></span></p>
+                    <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                    <p>Status: <span th:text="${order.status}"></span></p>
+                    <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span></p>
+                    
+                    <div class="order-actions">
+                        <form th:action="@{/delivery_agent/mark-delivered}" method="post">
+                            <input type="hidden" name="orderId" th:value="${order.id}">
+                            <button type="submit" class="deliver-btn">Mark as Delivered</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

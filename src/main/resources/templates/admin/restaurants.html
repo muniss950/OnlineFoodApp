@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Restaurants</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Manage Restaurants</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications">Notifications</a></li>
+            <li><a href="/restaurants/admin">Manage Restaurants</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Add New Restaurant</h2>
+        <form th:action="@{/restaurants/admin/add}" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="cuisineType">Cuisine Type:</label>
+                <input type="text" id="cuisineType" name="cuisineType" required>
+            </div>
+            <div class="form-group">
+                <label for="operatingHours">Operating Hours:</label>
+                <input type="text" id="operatingHours" name="operatingHours" required>
+            </div>
+            <div class="form-group">
+                <label for="isActive">Active:</label>
+                <input type="checkbox" id="isActive" name="isActive" checked>
+            </div>
+            <button type="submit">Add Restaurant</button>
+        </form>
+        
+        <h2>Restaurants</h2>
+        <div class="restaurants">
+            <div class="restaurant" th:each="restaurant : ${restaurants}">
+                <h3 th:text="${restaurant.name}"></h3>
+                <p>Cuisine: <span th:text="${restaurant.cuisineType}"></span></p>
+                <p>Address: <span th:text="${restaurant.address}"></span></p>
+                <p>Phone: <span th:text="${restaurant.phone}"></span></p>
+                <p>Email: <span th:text="${restaurant.email}"></span></p>
+                <p>Operating Hours: <span th:text="${restaurant.operatingHours}"></span></p>
+                <p>Status: <span th:text="${restaurant.isActive ? 'Active' : 'Inactive'}"></span></p>
+                
+                <form th:action="@{/restaurants/admin/toggle/{id}(id=${restaurant.id})}" method="post">
+                    <button type="submit" th:text="${restaurant.isActive ? 'Deactivate' : 'Activate'}"></button>
+                </form>
+                
+                <form th:action="@{/restaurants/admin/update/{id}(id=${restaurant.id})}" method="post">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" th:value="${restaurant.name}" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <input type="text" th:value="${restaurant.address}" name="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="text" th:value="${restaurant.phone}" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" th:value="${restaurant.email}" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cuisineType">Cuisine Type:</label>
+                        <input type="text" th:value="${restaurant.cuisineType}" name="cuisineType" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="operatingHours">Operating Hours:</label>
+                        <input type="text" th:value="${restaurant.operatingHours}" name="operatingHours" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="isActive">Active:</label>
+                        <input type="checkbox" th:checked="${restaurant.isActive}" name="isActive">
+                    </div>
+                    <button type="submit">Update</button>
+                </form>
+                
+                <form th:action="@{/restaurants/admin/delete/{id}(id=${restaurant.id})}" method="post">
+                    <button type="submit" class="delete-btn">Delete</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

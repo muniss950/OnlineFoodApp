@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Food Delivery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="landing-container">
+        <h1>Welcome to Food Delivery</h1>
+        <div class="portal-options">
+            <a href="/auth/customer/login" class="portal-link customer">
+                <h2>Customer Portal</h2>
+                <p>Order food from your favorite restaurants</p>
+            </a>
+            <a href="/auth/restaurant/login" class="portal-link restaurant">
+                <h2>Restaurant Portal</h2>
+                <p>Manage your restaurant and orders</p>
+            </a>
+            <a href="/auth/admin/login" class="portal-link admin">
+                <h2>Admin Portal</h2>
+                <p>System administration and management</p>
+            </a>
+        </div>
+        <div class="auth-links">
+            <p>New user? <a th:href="@{/auth/register}">Register here</a></p>
+        </div>
+    </div>
+</body>
+</html> 

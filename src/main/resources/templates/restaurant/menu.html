@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Menu - Restaurant Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Restaurant Portal</div>
+        <div class="nav-links">
+            <a th:href="@{/restaurant/dashboard}" class="nav-link">Dashboard</a>
+            <a th:href="@{/restaurant/menu}" class="nav-link active">Manage Menu</a>
+            <a th:href="@{/restaurant/orders}" class="nav-link">All Orders</a>
+            <a th:href="@{/restaurant/profile}" class="nav-link">Profile</a>
+            <a th:href="@{/auth/logout}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Menu Management</h1>
+            <button class="btn-primary" onclick="showAddItemForm()">Add New Item</button>
+        </header>
+
+        <!-- Add/Edit Item Form -->
+        <div id="itemForm" class="form-container" style="display: none;">
+            <h2 id="formTitle">Add Menu Item</h2>
+            <form th:action="@{/restaurant/menu/save}" method="post">
+                <input type="hidden" id="itemId" name="id">
+                <div class="form-group">
+                    <label for="name">Item Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="APPETIZER">Appetizer</option>
+                        <option value="MAIN_COURSE">Main Course</option>
+                        <option value="DESSERT">Dessert</option>
+                        <option value="BEVERAGE">Beverage</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="available" name="available" checked>
+                        Available
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Item</button>
+                    <button type="button" class="btn-secondary" onclick="hideItemForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Menu Items List -->
+        <div class="menu-grid">
+            <div th:each="item : ${menuItems}" class="menu-item">
+                <div class="menu-item-header">
+                    <h3 th:text="${item.name}">Item Name</h3>
+                    <span class="badge" th:classappend="${item.available ? 'available' : 'unavailable'}"
+                          th:text="${item.available ? 'Available' : 'Unavailable'}">Status</span>
+                </div>
+                <p class="description" th:text="${item.description}">Description</p>
+                <p class="price">$<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0.00</span></p>
+                <p class="category" th:text="${item.category}">Category</p>
+                <div class="item-actions">
+                    <button class="btn-edit" th:onclick="'editItem(' + ${item.id} + ')'">Edit</button>
+                    <form th:action="@{/restaurant/menu/toggle/{id}(id=${item.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-toggle" 
+                                th:text="${item.available ? 'Mark Unavailable' : 'Mark Available'}">
+                            Toggle Availability
+                        </button>
+                    </form>
+                    <form th:action="@{/restaurant/menu/delete/{id}(id=${item.id})}" method="post" 
+                          style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this item?')">
+                        <button type="submit" class="btn-delete">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <p th:if="${menuItems.empty}" class="no-data">No menu items available. Add some items to get started!</p>
+    </div>
+
+    <script>
+        function showAddItemForm() {
+            document.getElementById('formTitle').textContent = 'Add Menu Item';
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemForm').style.display = 'block';
+        }
+
+        function hideItemForm() {
+            document.getElementById('itemForm').style.display = 'none';
+        }
+
+        function editItem(id) {
+            // You'll need to implement this to populate the form with item data
+            document.getElementById('formTitle').textContent = 'Edit Menu Item';
+            document.getElementById('itemId').value = id;
+            document.getElementById('itemForm').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

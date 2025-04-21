@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Login - Food Delivery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="auth-container customer-login">
+        <h2>Customer Login</h2>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        
+        <form th:action="@{/auth/customer/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div class="auth-links">
+            <p>New customer? <a th:href="@{/auth/register}">Register here</a></p>
+            <p><a th:href="@{/}">Back to home</a></p>
+        </div>
+    </div>
+</body>
+</html> 

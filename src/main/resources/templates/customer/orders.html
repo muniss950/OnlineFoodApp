@@ -1,0 +1,106 @@
+<!-- <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>My Orders</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/customer/dashboard">Menu</a></li>
+            <li><a href="/customer/orders">My Orders</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="orders">
+             Option 1: Using ${} syntax -->
+            <!-- <div class="order" th:each="order : ${orders}">
+                <h3>Order #<span th:text="${order.id}"></span></h3>
+                <p>Status: <span th:text="${order.status}"></span></p>
+                <p>Total: $<span th:text="${order.totalPrice != null} ? ${#numbers.formatDecimal(order.totalPrice, 1, 2)} : '0.00'"></span></p>
+                <p>Date: <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+                <div th:if="${order.deliveryAgent != null}">
+                    <p>Delivery Agent: <span th:text="${order.deliveryAgent.name}"></span></p>
+                </div>
+            </div>
+            
+            
+        </div>
+    </main>
+</body>
+</html> --> 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        function toggleOrderDetails(orderId) {
+            let detailsDiv = document.getElementById("order-details-" + orderId);
+            detailsDiv.style.display = (detailsDiv.style.display === "none") ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>My Orders</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/customer/dashboard">Menu</a></li>
+            <li><a href="/customer/orders">My Orders</a></li>
+            <li><a href="/customer/notifications">Notifications</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="orders">
+            <div class="order" th:each="order : ${orders}">
+                <h3>Order #<span th:text="${order.id}"></span></h3>
+                <div class="restaurant-info">
+                    <h4>Restaurant: <span th:text="${order.restaurant.name}"></span></h4>
+                    <p>Cuisine: <span th:text="${order.restaurant.cuisineType}"></span></p>
+                    <p>Address: <span th:text="${order.restaurant.address}"></span></p>
+                    <p>Phone: <span th:text="${order.restaurant.phone}"></span></p>
+                </div>
+                <p>Status: <span th:text="${order.status}"></span></p>
+                <p>Total Price: $<span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></span></p>
+                <p>Final Discounted Price: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span></p>
+                
+                <div th:if="${order.deliveryAgent != null}">
+                    <p>Delivery Agent: <span th:text="${order.deliveryAgent.name}"></span></p>
+                </div>
+
+                <!-- Button to Expand Order Details -->
+                <button th:attr="onclick='toggleOrderDetails(' + ${order.id} + ')'" class="toggle-button">
+                    View Items
+                </button>
+
+                <!-- Hidden Order Items Section -->
+                <div th:id="'order-details-' + ${order.id}" class="order-details" style="display: none;">
+                    <h4>Order Items:</h4>
+                    <ul>
+                        <li th:each="item : ${order.orderItems}">
+                            <span th:text="${item.menuItem.name}"></span> - 
+                            $<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}"></span>
+                            <span th:if="${item.menuItem.discountPercentage > 0}">
+                                (Discounted Price: $<span th:text="${#numbers.formatDecimal(item.menuItem.discountedPrice, 1, 2)}"></span>)
+                            </span>
+                            x <span th:text="${item.quantity}"></span>
+                            <span th:if="${item.largeSize}">(Large Size)</span>
+                            <span th:if="${item.premium}">(Premium Service)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

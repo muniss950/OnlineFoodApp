@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Restaurant Portal</div>
+        <div class="nav-links">
+            <a th:href="@{/restaurant/menu}" class="nav-link">Manage Menu</a>
+            <a th:href="@{/restaurant/orders}" class="nav-link">All Orders</a>
+            <a th:href="@{/restaurant/profile}" class="nav-link">Profile</a>
+            <a th:href="@{/auth/logout}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Welcome, <span th:text="${restaurant.name}">Restaurant Name</span></h1>
+            <div class="status-badge" th:classappend="${restaurant.isActive() ? 'active' : 'inactive'}">
+                <span th:text="${restaurant.isActive() ? 'Open' : 'Closed'}">Status</span>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Today's Orders Section -->
+            <section class="dashboard-card orders-today">
+                <h2>Today's Orders</h2>
+                <div class="order-list" th:if="${!todayOrders.empty}">
+                    <div class="order-item" th:each="order : ${todayOrders}">
+                        <div class="order-header">
+                            <span class="order-id">Order #<span th:text="${order.id}"></span></span>
+                            <span class="order-status" th:text="${order.status}">Status</span>
+                        </div>
+                        <div class="order-details">
+                            <p>Items: <span th:text="${order.orderItems.size()}">0</span></p>
+                            <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}">0.00</span></p>
+                        </div>
+                        <div class="order-actions">
+                            <form th:action="@{/restaurant/orders/update/{id}(id=${order.id})}" method="post">
+                                <select name="status" class="status-select">
+                                    <option value="PREPARING">Preparing</option>
+                                    <option value="READY">Ready</option>
+                                    <option value="ON_THE_WAY">On the Way</option>
+                                </select>
+                                <button type="submit" class="btn-update">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <p th:if="${todayOrders.empty}" class="no-data">No orders today</p>
+            </section>
+
+            <!-- Pending Orders Section -->
+            <section class="dashboard-card pending-orders">
+                <h2>Pending Orders</h2>
+                <div class="order-list" th:if="${!pendingOrders.empty}">
+                    <div class="order-item" th:each="order : ${pendingOrders}">
+                        <div class="order-header">
+                            <span class="order-id">Order #<span th:text="${order.id}"></span></span>
+                            <span class="order-time" th:text="${#temporals.format(order.orderDate, 'HH:mm')}">Time</span>
+                        </div>
+                        <div class="order-details">
+                            <p>Items: <span th:text="${order.orderItems.size()}">0</span></p>
+                            <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}">0.00</span></p>
+                        </div>
+                        <div class="order-actions">
+                            <form th:action="@{/restaurant/orders/update/{id}(id=${order.id})}" method="post">
+                                <input type="hidden" name="status" value="PREPARING">
+                                <button type="submit" class="btn-accept">Accept Order</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <p th:if="${pendingOrders.empty}" class="no-data">No pending orders</p>
+            </section>
+
+            <!-- Menu Overview Section -->
+            <section class="dashboard-card menu-overview">
+                <h2>Menu Overview</h2>
+                <div class="menu-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Items</span>
+                        <span class="stat-value" th:text="${menuItems != null ? #lists.size(menuItems) : 0}">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Available Items</span>
+                        <span class="stat-value" 
+                              th:text="${menuItems != null ? #aggregates.sum(menuItems.![isAvailable() ? 1 : 0]) : 0}">0</span>
+                    </div>
+                </div>
+                <a th:href="@{/restaurant/menu}" class="btn-manage">Manage Menu</a>
+            </section>
+        </div>
+    </div>
+</body>
+</html> 

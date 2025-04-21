@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders - Restaurant Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Restaurant Portal</div>
+        <div class="nav-links">
+            <a th:href="@{/restaurant/dashboard}" class="nav-link">Dashboard</a>
+            <a th:href="@{/restaurant/menu}" class="nav-link">Manage Menu</a>
+            <a th:href="@{/restaurant/orders}" class="nav-link active">All Orders</a>
+            <a th:href="@{/restaurant/profile}" class="nav-link">Profile</a>
+            <a th:href="@{/auth/logout}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Order Management</h1>
+            <div class="filter-controls">
+                <select id="statusFilter" onchange="filterOrders()">
+                    <option value="ALL">All Orders</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="PREPARING">Preparing</option>
+                    <option value="READY">Ready</option>
+                    <option value="ON_THE_WAY">On The Way</option>
+                    <option value="DELIVERED">Delivered</option>
+                </select>
+                <input type="date" id="dateFilter" onchange="filterOrders()">
+            </div>
+        </header>
+
+        <div class="orders-container">
+            <div th:each="order : ${orders}" class="order-card">
+                <div class="order-header">
+                    <span class="order-id">Order #<span th:text="${order.id}"></span></span>
+                    <span class="order-date" th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy HH:mm')}">Date</span>
+                </div>
+                <div class="order-status">
+                    <span class="status-badge" th:text="${order.status}">Status</span>
+                </div>
+                <div class="order-details">
+                    <h3>Order Items:</h3>
+                    <ul class="item-list">
+                        <li th:each="item : ${order.orderItems}">
+                            <span th:text="${item.menuItem.name}">Item Name</span>
+                            <span class="quantity">x<span th:text="${item.quantity}">1</span></span>
+                            <span class="price">$<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0.00</span></span>
+                        </li>
+                    </ul>
+                    <div class="order-total">
+                        <strong>Total:</strong> $<span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}">0.00</span>
+                    </div>
+                </div>
+                <div class="customer-info">
+                    <h3>Customer Details:</h3>
+                    <p><strong>Name:</strong> <span th:text="${order.user.username}">Customer Name</span></p>
+                    <p><strong>Contact:</strong> <span th:text="${order.user.email}">customer@email.com</span></p>
+                </div>
+                <div class="order-actions">
+                    <form th:action="@{/restaurant/orders/update/{id}(id=${order.id})}" method="post">
+                        <select name="status" class="status-select" th:if="${order.status != 'DELIVERED'}">
+                            <option value="PREPARING" th:selected="${order.status == 'PENDING'}">Accept & Prepare</option>
+                            <option value="READY" th:selected="${order.status == 'PREPARING'}">Mark Ready</option>
+                            <option value="ON_THE_WAY" th:selected="${order.status == 'READY'}">Out for Delivery</option>
+                            <option value="DELIVERED" th:selected="${order.status == 'ON_THE_WAY'}">Mark Delivered</option>
+                        </select>
+                        <button type="submit" class="btn-update" th:if="${order.status != 'DELIVERED'}">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <p th:if="${orders.empty}" class="no-data">No orders found.</p>
+    </div>
+
+    <script>
+        function filterOrders() {
+            const status = document.getElementById('statusFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            window.location.href = `/restaurant/orders?status=${status}&date=${date}`;
+        }
+    </script>
+</body>
+</html> 

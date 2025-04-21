@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .notifications-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .notification {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        .notification.unread {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+        }
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .notification-title {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .notification-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .notification-message {
+            margin-bottom: 10px;
+        }
+        .notification-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .mark-all-btn {
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .mark-all-btn:hover {
+            background-color: #40a9ff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, <span th:text="${user.username}"></span>!</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications">Notifications</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="notifications-container">
+            <h2>Notifications</h2>
+            
+            <form method="post" action="/admin/notifications/markAllAsRead">
+                <button type="submit" class="mark-all-btn">Mark All as Read</button>
+            </form>
+            
+            <div th:if="${notifications.empty}">
+                <p>You don't have any notifications yet.</p>
+            </div>
+            
+            <div th:each="notification : ${notifications}">
+                <div class="notification" th:classappend="${!notification.read} ? 'unread'">
+                    <div class="notification-header">
+                        <span class="notification-title" th:text="${notification.title}"></span>
+                        <span class="notification-time" th:text="${#temporals.format(notification.createdAt, 'MMM dd, yyyy hh:mm a')}"></span>
+                    </div>
+                    <div class="notification-message" th:text="${notification.message}"></div>
+                    <div class="notification-actions">
+                        <form method="post" th:action="@{/admin/notifications/markAsRead/{id}(id=${notification.id})}">
+                            <button type="submit" th:if="${!notification.read}">Mark as Read</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

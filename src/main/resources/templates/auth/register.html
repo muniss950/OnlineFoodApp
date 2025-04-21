@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Food Delivery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Registration</h2>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        
+        <form th:action="@{/auth/register}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Register as:</label>
+                <select id="role" name="role" required onchange="toggleRestaurantFields()">
+                    <option value="CUSTOMER">Customer</option>
+                    <option value="RESTAURANT">Restaurant</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            
+            <!-- Restaurant selection field -->
+            <div id="restaurantFields" style="display: none;">
+                <div class="form-group">
+                    <label for="restaurantId">Select Restaurant:</label>
+                    <select id="restaurantId" name="restaurantId" th:if="${restaurants != null}">
+                        <option value="">Select a restaurant</option>
+                        <option th:each="restaurant : ${restaurants}"
+                                th:value="${restaurant.id}"
+                                th:text="${restaurant.name + ' - ' + restaurant.address}">
+                        </option>
+                    </select>
+                    <p th:if="${restaurants == null || restaurants.empty}" class="error">
+                        No restaurants available. Please contact admin to add your restaurant first.
+                    </p>
+                </div>
+            </div>
+            
+            <button type="submit">Register</button>
+        </form>
+        
+        <div class="auth-links">
+            <p>Already have an account? <a th:href="@{/auth/login}">Login here</a></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleRestaurantFields() {
+            const role = document.getElementById('role').value;
+            const restaurantFields = document.getElementById('restaurantFields');
+            const restaurantSelect = document.getElementById('restaurantId');
+            
+            if (role === 'RESTAURANT') {
+                restaurantFields.style.display = 'block';
+                if (restaurantSelect) {
+                    restaurantSelect.required = true;
+                }
+            } else {
+                restaurantFields.style.display = 'none';
+                if (restaurantSelect) {
+                    restaurantSelect.required = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

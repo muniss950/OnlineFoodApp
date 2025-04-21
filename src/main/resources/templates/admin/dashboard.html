@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications">Notifications</a></li>
+            <li><a href="/restaurants/admin">Manage Restaurants</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2>Restaurants</h2>
+                <div class="restaurants-preview">
+                    <div class="restaurant-item" th:each="restaurant : ${restaurants}">
+                        <h3 th:text="${restaurant.name}"></h3>
+                        <p>Cuisine: <span th:text="${restaurant.cuisineType}"></span></p>
+                        <p>Status: <span th:text="${restaurant.isActive ? 'Active' : 'Inactive'}" 
+                            th:class="${restaurant.isActive ? 'status-active' : 'status-inactive'}"></span></p>
+                    </div>
+                </div>
+                <a href="/restaurants/admin" class="view-all-btn">Manage Restaurants</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Pending Orders</h2>
+                <div class="orders-preview">
+                    <div class="order-item" th:each="order : ${pendingOrders}">
+                        <h3>Order #<span th:text="${order.id}"></span></h3>
+                        <p>Customer: <span th:text="${order.user.username}"></span></p>
+                        <p>Total: $<span th:text="${#numbers.formatDecimal(order.totalDiscountedPrice, 1, 2)}"></span></p>
+                        <p>Restaurant: <span th:text="${order.restaurant.name}"></span></p>
+                    </div>
+                </div>
+                <a href="/admin/orders" class="view-all-btn">Manage Orders</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions">
+                    <a href="/restaurants/admin" class="action-btn">Add Restaurant</a>
+                    <a href="/admin/menu" class="action-btn">Add Menu Item</a>
+                    <a href="/admin/agents" class="action-btn">Add Delivery Agent</a>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h2>Statistics</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Active Restaurants:</span>
+                        <span class="stat-value" th:text="${#lists.size(restaurants.?[isActive])}"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Pending Orders:</span>
+                        <span class="stat-value" th:text="${pendingOrders.size()}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

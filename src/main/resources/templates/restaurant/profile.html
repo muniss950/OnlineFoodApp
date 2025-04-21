@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile - Restaurant Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Restaurant Portal</div>
+        <div class="nav-links">
+            <a th:href="@{/restaurant/dashboard}" class="nav-link">Dashboard</a>
+            <a th:href="@{/restaurant/menu}" class="nav-link">Manage Menu</a>
+            <a th:href="@{/restaurant/orders}" class="nav-link">All Orders</a>
+            <a th:href="@{/restaurant/profile}" class="nav-link active">Profile</a>
+            <a th:href="@{/auth/logout}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Restaurant Profile</h1>
+        </header>
+
+        <div class="profile-container">
+            <div th:if="${message}" class="alert" th:classappend="${success ? 'alert-success' : 'alert-error'}"
+                 th:text="${message}">
+                Update Status
+            </div>
+
+            <form th:action="@{/restaurant/profile/update}" method="post" class="profile-form">
+                <div class="form-group">
+                    <label for="name">Restaurant Name:</label>
+                    <input type="text" id="name" name="name" th:value="${restaurant.name}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address" required th:text="${restaurant.address}"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" name="phone" th:value="${restaurant.phone}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" th:value="${restaurant.email}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cuisineType">Cuisine Type:</label>
+                    <select id="cuisineType" name="cuisineType" required>
+                        <option value="ITALIAN" th:selected="${restaurant.cuisineType == 'ITALIAN'}">Italian</option>
+                        <option value="CHINESE" th:selected="${restaurant.cuisineType == 'CHINESE'}">Chinese</option>
+                        <option value="INDIAN" th:selected="${restaurant.cuisineType == 'INDIAN'}">Indian</option>
+                        <option value="MEXICAN" th:selected="${restaurant.cuisineType == 'MEXICAN'}">Mexican</option>
+                        <option value="JAPANESE" th:selected="${restaurant.cuisineType == 'JAPANESE'}">Japanese</option>
+                        <option value="AMERICAN" th:selected="${restaurant.cuisineType == 'AMERICAN'}">American</option>
+                        <option value="OTHER" th:selected="${restaurant.cuisineType == 'OTHER'}">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="operatingHours">Operating Hours:</label>
+                    <input type="text" id="operatingHours" name="operatingHours" 
+                           th:value="${restaurant.operatingHours}" 
+                           placeholder="e.g., Mon-Fri: 9:00 AM - 10:00 PM" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isActive" name="isActive" 
+                               th:checked="${restaurant.isActive()}">
+                        Restaurant is Open
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+
+            <div class="password-section">
+                <h2>Change Password</h2>
+                <form th:action="@{/restaurant/profile/password}" method="post" class="password-form">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password:</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password:</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-secondary">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

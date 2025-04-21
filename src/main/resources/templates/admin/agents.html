@@ -1,0 +1,111 @@
+<!--v1 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Delivery Agents</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Manage Delivery Agents</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Add New Delivery Agent</h2>
+        <form th:action="@{/admin/agents/add}" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+            <button type="submit">Add Agent</button>
+        </form>
+        
+        <h2>Delivery Agents</h2>
+        <div class="agents">
+            <div class="agent" th:each="agent : ${agents}">
+                <h3 th:text="${agent.name}"></h3>
+                <p th:text="${agent.phone}"></p>
+                <form th:action="@{/admin/agents/update/{id}(id=${agent.id})}" method="post">
+                    <label>
+                        Available: <input type="checkbox" name="available" th:checked="${agent.available}">
+                    </label>
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Delivery Agents</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Manage Delivery Agents</h1>
+        <a href="/auth/logout">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/menu">Manage Menu</a></li>
+            <li><a href="/admin/orders">Manage Orders</a></li>
+            <li><a href="/admin/agents">Manage Delivery Agents</a></li>
+            <li><a href="/admin/notifications"> Notifications </a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Add New Delivery Agent</h2>
+        <form th:action="@{/admin/agents/add}" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+            <button type="submit">Add Agent</button>
+        </form>
+        
+        <h2>Delivery Agents</h2>
+        <div class="agents">
+            <div class="agent" th:each="agent : ${agents}">
+                <h3 th:text="${agent.name}"></h3>
+                <p>Username: <span th:text="${agent.username}"></span></p>
+                <p>Phone: <span th:text="${agent.phone}"></span></p>
+                <p>Password: ********</p>
+                <form th:action="@{/admin/agents/update/{id}(id=${agent.id})}" method="post">
+                    <label>
+                        Available: <input type="checkbox" name="available" th:checked="${agent.available}">
+                    </label>
+                    <button type="submit">Update Availability</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
