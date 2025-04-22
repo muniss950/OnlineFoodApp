@@ -18,52 +18,123 @@ public class OrderItem {
     private MenuItem menuItem;
     
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
     
     @Column(nullable = false)
-    private double price;
+    private Double price;
     
     @Column(nullable = false)
-    private double discountedPrice=0.0;
-    @Column(nullable = false)
-    private boolean largeSize;
-    @Column(nullable = false)
-    private boolean premium;
-    @Column(nullable = false)
+    private Double discountedPrice;
+    
+    @Column
     private String name;
-    @Column(nullable = false)
-    private String description;
-    // Constructors, Getters, and Setters
-    public OrderItem() {}
     
-    public OrderItem(Order order, MenuItem menuItem, int quantity, double price) {
-        this.order = order;
+    @Column
+    private String description;
+    
+    @Column
+    private Boolean largeSize;
+    
+    @Column
+    private Boolean premium;
+    
+    // Constructors, Getters, and Setters
+    public OrderItem() {
+        this.largeSize = false;
+        this.premium = false;
+        this.price = 0.0;
+        this.discountedPrice = 0.0;
+        this.quantity = 0;
+    }
+    
+    public OrderItem(MenuItem menuItem, Integer quantity) {
+        this();
         this.menuItem = menuItem;
         this.quantity = quantity;
-        this.price = price;
-        this.discountedPrice = price;
+        this.price = menuItem.getPrice();
+        this.discountedPrice = this.price;
+        this.name = menuItem.getName();
+        this.description = menuItem.getDescription();
     }
     
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Order getOrder() { return order; }
-    public void setOrder(Order order) { this.order = order; }
-    public MenuItem getMenuItem() { return menuItem; }
-    public void setMenuItem(MenuItem menuItem) { this.menuItem = menuItem; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public double getDiscountedPrice() { return discountedPrice; }
-    public void setDiscountedPrice(double discountedPrice) { this.discountedPrice= discountedPrice; }
-    public boolean isLargeSize() { return largeSize; }
-    public void setLargeSize(boolean largeSize) { this.largeSize = largeSize; }
-    public boolean isPremium() { return premium; }
-    public void setPremium(boolean premium) { this.premium = premium; }
-    public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
-    public String getDescription() {return description;}
-    public void setDescription(String description) {this.description = description;}
-
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public Order getOrder() {
+        return order;
+    }
+    
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+    
+    public MenuItem getMenuItem() {
+        return menuItem;
+    }
+    
+    public void setMenuItem(MenuItem menuItem) {
+        this.menuItem = menuItem;
+    }
+    
+    public Integer getQuantity() {
+        return quantity;
+    }
+    
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+    
+    public Double getPrice() {
+        return price;
+    }
+    
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+    
+    public Double getDiscountedPrice() {
+        return discountedPrice;
+    }
+    
+    public void setDiscountedPrice(Double discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public Boolean isLargeSize() {
+        return largeSize != null ? largeSize : false;
+    }
+    
+    public void setLargeSize(Boolean largeSize) {
+        this.largeSize = largeSize;
+    }
+    
+    public Boolean isPremium() {
+        return premium != null ? premium : false;
+    }
+    
+    public void setPremium(Boolean premium) {
+        this.premium = premium;
+    }
 }

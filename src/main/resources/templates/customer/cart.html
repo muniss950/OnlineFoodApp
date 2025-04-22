@@ -1,0 +1,52 @@
+            <div class="payment-section">
+                <h3>Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <input type="radio" id="credit-card" name="paymentMethod" value="credit-card" checked>
+                        <label for="credit-card">Credit Card</label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" id="debit-card" name="paymentMethod" value="debit-card">
+                        <label for="debit-card">Debit Card</label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" id="upi" name="paymentMethod" value="upi">
+                        <label for="upi">UPI</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span>$<span th:text="${#numbers.formatDecimal(subtotal, 1, 2)}"></span></span>
+                </div>
+                <div class="summary-item">
+                    <span>Delivery Fee:</span>
+                    <span>$<span th:text="${#numbers.formatDecimal(deliveryFee, 1, 2)}"></span></span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span>$<span th:text="${#numbers.formatDecimal(total, 1, 2)}"></span></span>
+                </div>
+            </div>
+            
+            <form th:action="@{/customer/place-order}" method="post" class="checkout-form">
+                <input type="hidden" name="itemIds" th:each="item : ${cartItems}" th:value="${item.menuItem.id}" />
+                <input type="hidden" name="paymentMethodId" id="selectedPaymentMethod" value="credit-card" />
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
+    const selectedPaymentMethod = document.getElementById('selectedPaymentMethod');
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            selectedPaymentMethod.value = this.value;
+        });
+    });
+});
+</script> 

@@ -19,7 +19,7 @@ public class BaseMenuItem implements MenuComponent {
 
     @Override
     public double getPrice() {
-        return menuItem.getDiscountedPrice();
+        return menuItem.getPrice();
     }
 }
 

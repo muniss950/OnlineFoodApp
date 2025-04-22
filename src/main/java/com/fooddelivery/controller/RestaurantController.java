@@ -48,7 +48,7 @@ public class RestaurantController {
     public String adminDashboard(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         model.addAttribute("restaurants", restaurantService.getAllRestaurants());
@@ -59,7 +59,7 @@ public class RestaurantController {
     public String toggleRestaurantStatus(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         restaurantService.toggleRestaurantStatus(id);
@@ -70,7 +70,7 @@ public class RestaurantController {
     public String addRestaurant(@ModelAttribute Restaurant restaurant, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         restaurantService.addRestaurant(restaurant);
@@ -81,7 +81,7 @@ public class RestaurantController {
     public String updateRestaurant(@PathVariable Long id, @ModelAttribute Restaurant restaurant, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         restaurantService.updateRestaurant(id, restaurant);
@@ -92,7 +92,7 @@ public class RestaurantController {
     public String deleteRestaurant(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         restaurantService.deleteRestaurant(id);

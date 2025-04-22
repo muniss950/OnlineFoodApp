@@ -46,7 +46,7 @@ public class RestaurantPortalController {
     public String dashboard(HttpSession session, Model model) {
         Long restaurantId = (Long) session.getAttribute("restaurantId");
         if (restaurantId == null) {
-            return "redirect:/auth/restaurant/login";
+            return "redirect:/auth";
         }
 
         try {
@@ -74,7 +74,7 @@ public class RestaurantPortalController {
     public String menu(Model model, HttpSession session) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         List<MenuItem> menuItems = menuService.getRestaurantMenuItems(restaurant.getId());
@@ -86,7 +86,7 @@ public class RestaurantPortalController {
     public String saveMenuItem(@ModelAttribute MenuItem menuItem, HttpSession session, RedirectAttributes redirectAttributes) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         menuItem.setRestaurant(restaurant);
@@ -99,7 +99,7 @@ public class RestaurantPortalController {
     public String toggleMenuItem(@PathVariable Long id, HttpSession session) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         menuService.getMenuItemById(id).ifPresent(menuItem -> {
@@ -115,7 +115,7 @@ public class RestaurantPortalController {
     public String deleteMenuItem(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         menuService.getMenuItemById(id).ifPresent(menuItem -> {
@@ -133,7 +133,7 @@ public class RestaurantPortalController {
                         Model model, HttpSession session) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         List<Order> orders;
@@ -154,7 +154,7 @@ public class RestaurantPortalController {
                                   HttpSession session, RedirectAttributes redirectAttributes) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         Order order = orderService.getOrderById(id);
@@ -169,7 +169,7 @@ public class RestaurantPortalController {
     public String profile(HttpSession session, Model model) {
         Long restaurantId = (Long) session.getAttribute("restaurantId");
         if (restaurantId == null) {
-            return "redirect:/auth/restaurant/login";
+            return "redirect:/auth";
         }
 
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId)
@@ -184,7 +184,7 @@ public class RestaurantPortalController {
                               RedirectAttributes redirectAttributes) {
         Long restaurantId = (Long) session.getAttribute("restaurantId");
         if (restaurantId == null) {
-            return "redirect:/auth/restaurant/login";
+            return "redirect:/auth";
         }
 
         try {
@@ -216,7 +216,7 @@ public class RestaurantPortalController {
                                RedirectAttributes redirectAttributes) {
         Restaurant restaurant = getRestaurantFromSession(session);
         if (restaurant == null) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         User user = userService.getUserByRestaurant(restaurant);

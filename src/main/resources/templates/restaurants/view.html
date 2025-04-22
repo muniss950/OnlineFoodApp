@@ -25,47 +25,23 @@
 
             <div class="menu-section">
                 <h2>Menu</h2>
-                <form th:action="@{/customer/order}" method="post">
-                    <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
-                    <div class="menu-items">
+                <div class="menu-items">
+                    <h3>Menu</h3>
+                    <form th:action="@{/customer/order}" method="post">
+                        <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
                         <div th:each="item : ${restaurant.menuItems}" class="menu-item">
                             <div class="item-details">
-                                <h3 th:text="${item.name}">Item Name</h3>
+                                <input type="checkbox" name="menuItemIds" th:value="${item.id}">
+                                <h4 th:text="${item.name}">Item Name</h4>
                                 <p th:text="${item.description}">Item Description</p>
                                 <p class="price">
                                     <span th:text="${item.price}">0.00</span>
-                                    <span th:if="${item.discountPercentage > 0}" class="discount">
-                                        (-<span th:text="${item.discountPercentage}">0</span>%)
-                                    </span>
                                 </p>
                             </div>
-                            <div class="item-options">
-                                <input type="number" name="quantities" min="0" value="0" 
-                                       th:name="quantities" th:value="0">
-                                <input type="hidden" name="itemIds" th:value="${item.id}">
-                                
-                                <div class="size-options">
-                                    <label>
-                                        <input type="radio" name="size_${item.id}" value="regular" checked>
-                                        Regular
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="size_${item.id}" value="large">
-                                        Large (+$2)
-                                    </label>
-                                </div>
-                                
-                                <div class="premium-option">
-                                    <label>
-                                        <input type="checkbox" name="premium_${item.id}" value="true">
-                                        Premium Service (+$5)
-                                    </label>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="order-button">Place Order</button>
-                </form>
+                        <button type="submit" class="btn btn-primary">Place Order</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -29,6 +29,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
     
+    @Column(nullable = false)
+    private boolean active = true;
+    
+    @Column
+    private String phone;
+    
+    @Column
+    private String address;
+    
+    @Column
+    private String paymentMethodId;
+    
     // Constructors, Getters, and Setters
     public User() {}
     
@@ -94,5 +106,37 @@ public class User {
     
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
+    public String getPhone() {
+        return phone;
+    }
+    
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
+    
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    
+    public String getPaymentMethodId() {
+        return paymentMethodId;
+    }
+    
+    public void setPaymentMethodId(String paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
     }
 }

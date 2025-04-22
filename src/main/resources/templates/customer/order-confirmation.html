@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Confirmation</h1>
+        
+        <div class="order-details">
+            <h2>Order #<span th:text="${order.id}"></span></h2>
+            
+            <div class="order-status">
+                <h3>Order Status</h3>
+                <p th:text="${order.status}"></p>
+            </div>
+            
+            <div class="payment-details">
+                <h3>Payment Details</h3>
+                <p>Status: <span th:text="${payment.status}"></span></p>
+                <p>Amount: $<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></span></p>
+                <p>Payment Method: <span th:text="${payment.paymentMethodId}"></span></p>
+            </div>
+            
+            <div class="order-items">
+                <h3>Order Items</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${order.items}">
+                            <td th:text="${item.menuItem.name}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}"></span></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.price * item.quantity, 1, 2)}"></span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Total Amount</strong></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div class="delivery-details">
+                <h3>Delivery Details</h3>
+                <p>Delivery Address: <span th:text="${order.deliveryAddress}"></span></p>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a th:href="@{/customer/orders}" class="btn">View All Orders</a>
+            <a th:href="@{/customer/dashboard}" class="btn">Return to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html> 

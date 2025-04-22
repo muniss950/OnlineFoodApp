@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details - Food Delivery</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Order Details</h1>
+            <nav>
+                <a href="/customer/dashboard">Back to Dashboard</a>
+                <a href="/customer/orders">My Orders</a>
+                <a href="/auth/logout">Logout</a>
+            </nav>
+        </header>
+
+        <div class="order-details">
+            <div class="order-info">
+                <h2>Order #<span th:text="${order.id}">123</span></h2>
+                <p><strong>Restaurant:</strong> <span th:text="${order.restaurant.name}">Restaurant Name</span></p>
+                <p><strong>Status:</strong> <span th:text="${order.status}">Status</span></p>
+                <p><strong>Payment Status:</strong> <span th:text="${order.paymentStatus}">Payment Status</span></p>
+                <p><strong>Total Amount:</strong> $<span th:text="${order.totalAmount}">0.00</span></p>
+                <p><strong>Order Date:</strong> <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">Order Date</span></p>
+            </div>
+
+            <div class="order-items">
+                <h3>Order Items</h3>
+                <div th:each="item : ${order.orderItems}" class="order-item">
+                    <h4 th:text="${item.menuItem.name}">Item Name</h4>
+                    <p th:text="${item.menuItem.description}">Item Description</p>
+                    <p><strong>Quantity:</strong> <span th:text="${item.quantity}">1</span></p>
+                    <p><strong>Price:</strong> $<span th:text="${item.menuItem.price}">0.00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

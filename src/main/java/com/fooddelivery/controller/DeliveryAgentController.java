@@ -36,7 +36,7 @@ public class DeliveryAgentController {
     public String dashboard(HttpSession session , Model model) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
         if(agent == null){
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         List<Order> assignedOrders = orderService.getOrdersByDeliveryAgentAndStatus(agent.getId(), "ASSIGNED");
         List<Order> acceptedOrders = orderService.getOrdersByDeliveryAgentAndStatus(agent.getId(), "ON_THE_WAY");
@@ -51,7 +51,7 @@ public class DeliveryAgentController {
     public String acceptOrder(@RequestParam Long orderId,HttpSession session) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
         if(agent == null){
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         orderService.updateOrderStatus(orderId, "ON_THE_WAY");
         return "redirect:/delivery_agent/dashboard";
@@ -61,7 +61,7 @@ public class DeliveryAgentController {
     public String markDelivered(@RequestParam Long orderId, HttpSession session) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
         if(agent == null){
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         orderService.updateOrderStatus(orderId, "DELIVERED");
         return "redirect:/delivery_agent/dashboard";
@@ -70,7 +70,7 @@ public class DeliveryAgentController {
     public String rejectOrder(@RequestParam Long orderId, HttpSession session) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
         if(agent == null){
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         orderService.updateOrderStatus(orderId, "PREPARING");
         return "redirect:/delivery_agent/dashboard";
@@ -78,7 +78,7 @@ public class DeliveryAgentController {
     @GetMapping("/notifications")
     public String viewNotifications(HttpSession session, Model model) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
-        if (agent == null) return "redirect:/auth/login";
+        if (agent == null) return "redirect:/auth";
         
         List<Notification> notifications = notificationService.getAgentNotifications(agent);
         int unreadCount = notificationService.getUnreadCountForAgent(agent);
@@ -92,7 +92,7 @@ public class DeliveryAgentController {
     @PostMapping("/notifications/markAsRead/{id}")
     public String markAsReadForAgent(@PathVariable Long id, HttpSession session) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
-        if (agent == null) return "redirect:/auth/login";
+        if (agent == null) return "redirect:/auth";
         
         notificationService.markAsReadForAgent(id);
         return "redirect:/delivery_agent/notifications";
@@ -101,7 +101,7 @@ public class DeliveryAgentController {
     @PostMapping("/notifications/markAllAsRead")
     public String markAllAsRead(HttpSession session) {
         DeliveryAgent agent = (DeliveryAgent) session.getAttribute("deliveryAgent");
-        if (agent == null) return "redirect:/auth/login";
+        if (agent == null) return "redirect:/auth";
         
         notificationService.markAllAsReadForAgent(agent);
         return "redirect:/delivery_agent/notifications";

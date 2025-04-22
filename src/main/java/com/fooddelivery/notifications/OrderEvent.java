@@ -3,23 +3,33 @@ import com.fooddelivery.service.NotificationService;
 
 import com.fooddelivery.model.Order;
 
-public class OrderEvent implements Subject {
-
-    private Order order;
-    private NotificationService notificationService;
+public class OrderEvent {
+    private final Order order;
+    private final NotificationService notificationService;
+    
     public OrderEvent(Order order, NotificationService notificationService) {
         this.order = order;
         this.notificationService = notificationService;
     }
-
-    @Override
-    public void notifyObservers(EventType type) {
-        switch (type) {
-            case ORDER_PLACED -> notificationService.notifyOrderPlaced(order);
-            case ORDER_ASSIGNED -> notificationService.notifyOrderAssigned(order);
-            case ORDER_REJECTED -> notificationService.notifyOrderRejected(order);
-            case ORDER_ACCEPTED -> notificationService.notifyOrderAccepted(order);
-            case ORDER_DELIVERED -> notificationService.notifyOrderDelivered(order);
+    
+    public void notifyObservers(EventType eventType) {
+        switch (eventType) {
+            case ORDER_PLACED:
+                notificationService.notifyOrderPlaced(order);
+                break;
+            case ORDER_ASSIGNED:
+                notificationService.notifyOrderAssigned(order);
+                break;
+            case ORDER_ACCEPTED:
+                notificationService.notifyOrderAccepted(order);
+                break;
+            case ORDER_REJECTED:
+                notificationService.notifyOrderRejected(order);
+                break;
+            case ORDER_DELIVERED:
+                notificationService.notifyOrderDelivered(order);
+                break;
+            // Add more notification methods for other event types as needed
         }
     }
 }

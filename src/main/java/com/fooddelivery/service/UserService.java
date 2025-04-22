@@ -1,5 +1,6 @@
 package com.fooddelivery.service;
 
+import com.fooddelivery.factory.UserFactoryManager;
 import com.fooddelivery.model.User;
 import com.fooddelivery.model.Restaurant;
 import com.fooddelivery.repository.UserRepository;
@@ -12,19 +13,26 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private final UserFactoryManager userFactoryManager;
     
-    public UserService(UserRepository userRepository, RestaurantRepository restaurantRepository) {
+    public UserService(UserRepository userRepository, RestaurantRepository restaurantRepository, UserFactoryManager userFactoryManager) {
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
+        this.userFactoryManager = userFactoryManager;
     }
     
-    public User registerUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
+    @Transactional
+    public User registerUser(String username, String password, String email, String role) {
+        // Use the UserFactoryManager to create a user with the appropriate role
+        User user = userFactoryManager.createUser(role, username, password, email);
+        return userRepository.save(user);
+    }
+    
+    @Transactional
+    public User registerUser(String username, String password, String email, String role, 
+                            String phone, String address) {
+        // Use the UserFactoryManager to create a user with the appropriate role and additional properties
+        User user = userFactoryManager.createUser(role, username, password, email, phone, address);
         return userRepository.save(user);
     }
     
@@ -47,12 +55,12 @@ public class UserService {
             .filter(user -> password.equals(user.getPassword()));
     }
     
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+    
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     public User getUserByRestaurant(Restaurant restaurant) {

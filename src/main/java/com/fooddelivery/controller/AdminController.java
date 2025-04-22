@@ -36,7 +36,7 @@ public class AdminController {
     public String dashboard(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         model.addAttribute("pendingOrders", orderService.getOrdersByStatus("PENDING"));
@@ -48,7 +48,7 @@ public class AdminController {
     public String manageMenu(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
 
         
@@ -97,7 +97,7 @@ public class AdminController {
     public String manageOrders(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         model.addAttribute("orders", orderService.getOrdersByStatus("PENDING"));
@@ -117,7 +117,7 @@ public class AdminController {
     public String manageAgents(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/auth/login";
+            return "redirect:/auth";
         }
         
         model.addAttribute("agents", deliveryAgentService.getAllAgents());
@@ -144,7 +144,7 @@ public class AdminController {
     @GetMapping("/notifications")
     public String viewNotificationsAdmin(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null) return "redirect:/auth";
         
         List<Notification> notifications = notificationService.getAdminNotifications(user);
         int unreadCount = notificationService.getUnreadCountAdmin(user);
@@ -156,7 +156,7 @@ public class AdminController {
     @PostMapping("/notifications/markAsRead/{id}")
     public String markAsReadAdmin(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null) return "redirect:/auth";
         
         notificationService.markAsReadAdmin(id);
         return "redirect:/admin/notifications";
@@ -165,7 +165,7 @@ public class AdminController {
     @PostMapping("/notifications/markAllAsRead")
     public String markAllAsReadAdmin(HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null) return "redirect:/auth";
         
         notificationService.markAllAsReadAdmin(user);
         return "redirect:/admin/notifications";

@@ -16,42 +16,44 @@ public class Notification {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String message;
 
-    @Column(nullable = false)
-    private EventType type;
-
-    @Column(name = "`read`")
-    private boolean read;
+    @Column(name = "is_read", nullable = false)
+    private boolean read = false;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ObserverType observerType;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private EventType eventType;
 
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
 
-    @Column(nullable = false)
-    private ObserverType observerType;
-
     @ManyToOne
-    @JoinColumn(name = "delivery_agent_id")
-    private DeliveryAgent deliveryAgent;
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private  Order order;
 
-    public Notification() {
-        this.createdAt = LocalDateTime.now();
-        this.read = false;
-    }
-    public Notification(EventType type , User user, Order order){
-        this.type = type;
+    @ManyToOne
+    @JoinColumn(name = "delivery_agent_id")
+    private DeliveryAgent deliveryAgent;
+
+    public Notification() {}
+    public Notification(EventType eventType, User user, Order order) {
+        this.eventType = eventType;
         this.user = user;
         this.order = order;
-        this.createdAt = LocalDateTime.now();
     }
     public Long getId() { return id;}
     public void setId(Long id) {this.id = id;}
@@ -59,15 +61,11 @@ public class Notification {
     public void setTitle(String title) {this.title = title;}
     public String getMessage() {return message; }
     public void setMessage(String message) {this.message = message ;}
-    public EventType getType() {return type;}
-    public void setType(EventType type){
-        this.type = type;
+    public boolean isRead() {
+        return read;
     }
     public void setRead(boolean read) {
         this.read = read;
-    }
-    public boolean isRead() {
-        return read;
     }
     public LocalDateTime getCreatedAt(){return createdAt;}
     public void setCreatedAt(LocalDateTime createdAt){this.createdAt = createdAt;}
@@ -81,18 +79,22 @@ public class Notification {
     }
     public ObserverType getObserverType(){return observerType;}
     public void setObserverType(ObserverType observerType){this.observerType = observerType;}
-    public void setDeliveryAgent(DeliveryAgent deliveryAgent) {
-        this.deliveryAgent = deliveryAgent;
+    public EventType getEventType() {
+        return eventType;
+    }
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
     public DeliveryAgent getDeliveryAgent(){
         return deliveryAgent;
+    }
+    public void setDeliveryAgent(DeliveryAgent deliveryAgent) {
+        this.deliveryAgent = deliveryAgent;
     } 
-
-
-
-
-
-
-
-
 }

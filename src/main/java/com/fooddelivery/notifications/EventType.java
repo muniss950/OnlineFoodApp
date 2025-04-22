@@ -2,8 +2,14 @@ package com.fooddelivery.notifications;
 
 public enum EventType {
     ORDER_PLACED,
+    ORDER_CONFIRMED,
+    ORDER_PREPARING,
+    ORDER_READY,
     ORDER_ASSIGNED,
-    ORDER_REJECTED,
     ORDER_ACCEPTED,
-    ORDER_DELIVERED
+    ORDER_REJECTED,
+    ORDER_DELIVERED,
+    ORDER_CANCELLED,
+    PAYMENT_COMPLETED,
+    PAYMENT_FAILED
 }

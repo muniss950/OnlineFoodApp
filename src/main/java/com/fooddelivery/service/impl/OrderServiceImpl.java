@@ -40,18 +40,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order createOrder(User user, Restaurant restaurant, List<OrderItem> items) {
+    public Order createOrder(User customer, Restaurant restaurant, List<OrderItem> items) {
         Order order = new Order();
-        order.setUser(user);
+        order.setUser(customer);
         order.setRestaurant(restaurant);
         order.setStatus("PENDING");
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderTime(LocalDateTime.now());
+        
+        // Initialize numeric fields to avoid null issues
+        order.setDeliveryFee(0.0);
+        order.setTaxRate(0.0);
+        order.setDiscount(0.0);
+        order.setSubtotal(0.0);
+        order.setTax(0.0);
+        order.setTotal(0.0);
+        order.setPremiumDelivery(false);
 
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-        double discountedTotal = 0.0;
-        double total = 0.0;
+        Double discountedTotal = 0.0;
+        Double total = 0.0;
 
         for (OrderItem item : items) {
             MenuComponent menuComponent = new BaseMenuItem(item.getMenuItem());
@@ -63,8 +72,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Discount itemDiscount = itemDiscountFactory.createPriceDiscount(item.getMenuItem().getDiscountPercentage());
-            double basePrice = menuComponent.getPrice();
-            double discountedPrice = itemDiscount.applyDiscount(basePrice);
+            Double basePrice = menuComponent.getPrice();
+            Double discountedPrice = itemDiscount.applyDiscount(basePrice);
             
             item.setDiscountedPrice(discountedPrice);
             item.setName(menuComponent.getName());
@@ -74,10 +83,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Discount orderDiscount = orderDiscountFactory.createDayDiscount(5, dayOfWeek);
-        double finalTotal = orderDiscount.applyDiscount(discountedTotal);
+        Double finalTotal = orderDiscount.applyDiscount(discountedTotal);
 
-        order.setTotalPrice(total);
-        order.setTotalDiscountedPrice(finalTotal);
+        order.setTotalAmount(total);
+        order.setDiscount(total - finalTotal);
+        order.setTotal(finalTotal); // Set the final total after discount
+        order.setSubtotal(total);   // Set the subtotal before discounts
 
         Order savedOrder = orderRepository.save(order);
 
@@ -86,6 +97,8 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.save(item);
         }
 
+        order.setItems(items);
+        
         OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
         orderEvent.notifyObservers(EventType.ORDER_PLACED);
         return savedOrder;
@@ -110,21 +123,16 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order assignDeliveryAgent(Long orderId, Long agentId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-
+            .orElseThrow(() -> new RuntimeException("Order not found"));
         DeliveryAgent agent = deliveryAgentRepository.findById(agentId)
-                .orElseThrow(() -> new RuntimeException("Delivery agent not found"));
-
-        if (!agent.isAvailable()) {
-            throw new RuntimeException("Delivery agent is not available");
-        }
-
+            .orElseThrow(() -> new RuntimeException("Delivery agent not found"));
+        
         order.setDeliveryAgent(agent);
-        order.setStatus("ASSIGNED");
-
         Order savedOrder = orderRepository.save(order);
+        
         OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
         orderEvent.notifyObservers(EventType.ORDER_ASSIGNED);
+        
         return savedOrder;
     }
 
@@ -132,31 +140,24 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order updateOrderStatus(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
         
-        String oldStatus = order.getStatus();
         order.setStatus(status);
-        
         Order savedOrder = orderRepository.save(order);
         
-        if (oldStatus.equals("ASSIGNED") && status.equals("PREPARING")) {
-            OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
-            orderEvent.notifyObservers(EventType.ORDER_REJECTED);
-        } else if (status.equals("ON_THE_WAY")) {
-            OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
-            orderEvent.notifyObservers(EventType.ORDER_ACCEPTED);
-        } else if (status.equals("DELIVERED")) {
-            OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
-            orderEvent.notifyObservers(EventType.ORDER_DELIVERED);
-        }
+        OrderEvent orderEvent = new OrderEvent(savedOrder, notificationService);
+        orderEvent.notifyObservers(EventType.valueOf("ORDER_" + status.toUpperCase()));
         
         return savedOrder;
     }
 
     @Override
     public List<Order> getRestaurantOrdersByDate(Long restaurantId, LocalDate date) {
-        return orderRepository.findByRestaurantIdAndOrderDateBetween(restaurantId,
-                date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+        return orderRepository.findByRestaurantIdAndOrderTimeBetween(
+            restaurantId, 
+            date.atStartOfDay(), 
+            date.plusDays(1).atStartOfDay()
+        );
     }
 
     @Override
@@ -171,7 +172,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElse(null);
+        return orderRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
     @Override
@@ -182,5 +184,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getUserOrders(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<OrderItem> getOrderItems(Long orderId) {
+        return orderItemRepository.findByOrderId(orderId);
     }
 } 

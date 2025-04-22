@@ -1,25 +1,24 @@
 package com.fooddelivery.menudecorator;
 
-public class PremiumServiceDecorator extends MenuItemDecorator {
-    public PremiumServiceDecorator(MenuComponent menuComponent) {
-        super(menuComponent);
+public class PremiumServiceDecorator extends MenuDecorator {
+    
+    public PremiumServiceDecorator(MenuComponent decoratedMenuItem) {
+        super(decoratedMenuItem);
     }
-
+    
     @Override
     public String getName() {
-        return "Premium " + menuComponent.getName() + " Premium";
+        return "Premium " + decoratedMenuItem.getName();
     }
-
-    @Override
-    public double getPrice() {
-        return menuComponent.getPrice() + menuComponent.getPrice()/3; // add-on price
-    }
-
+    
     @Override
     public String getDescription() {
-        return menuComponent.getDescription() + " .made by Our best Chefs "; // add-on price
+        return decoratedMenuItem.getDescription() + " (Premium Service)";
     }
-
-
-
+    
+    @Override
+    public double getPrice() {
+        // Add 20% premium service charge
+        return decoratedMenuItem.getPrice() * 1.2;
+    }
 }

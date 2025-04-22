@@ -34,6 +34,14 @@
             </form>
         </div>
 
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}">Error message</p>
+        </div>
+        
+        <div th:if="${success}" class="success-message">
+            <p th:text="${success}">Success message</p>
+        </div>
+
         <div class="restaurants">
             <div th:each="restaurant : ${restaurants}" class="restaurant-card">
                 <h2 th:text="${restaurant.name}">Restaurant Name</h2>
@@ -46,6 +54,7 @@
                         <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
                         <div th:each="item : ${restaurant.menuItems}" class="menu-item">
                             <div class="item-details">
+                                <input type="checkbox" name="menuItemIds" th:value="${item.id}">
                                 <h4 th:text="${item.name}">Item Name</h4>
                                 <p th:text="${item.description}">Item Description</p>
                                 <p class="price">
@@ -56,24 +65,23 @@
                                 </p>
                             </div>
                             <div class="item-options">
-                                <input type="number" name="quantities" min="0" value="0" 
-                                       th:name="quantities" th:value="0">
+                                <input type="number" name="quantities" min="0" value="0">
                                 <input type="hidden" name="itemIds" th:value="${item.id}">
                                 
                                 <div class="size-options">
                                     <label>
-                                        <input type="radio" name="size_${item.id}" value="regular" checked>
+                                        <input type="radio" th:name="'size_' + ${item.id}" value="regular" checked>
                                         Regular
                                     </label>
                                     <label>
-                                        <input type="radio" name="size_${item.id}" value="large">
+                                        <input type="radio" th:name="'size_' + ${item.id}" value="large">
                                         Large (+$2)
                                     </label>
                                 </div>
                                 
                                 <div class="premium-option">
                                     <label>
-                                        <input type="checkbox" name="premium_${item.id}" value="true">
+                                        <input type="checkbox" th:name="'premium_' + ${item.id}" value="true">
                                         Premium Service (+$5)
                                     </label>
                                 </div>
