@@ -2,42 +2,94 @@
 
 A Spring Boot-based food delivery application that allows customers to order food from restaurants, restaurants to manage their menus and orders, and delivery agents to handle deliveries.
 
-## Design Patterns Used
+## Object-Oriented Design Patterns
 
-### 1. MVC (Model-View-Controller) Pattern
-- **Controllers**: Handle HTTP requests and responses (e.g., `CustomerController`, `RestaurantPortalController`)
-- **Models**: Represent data entities (e.g., `User`, `Restaurant`, `Order`, `MenuItem`)
-- **Views**: Thymeleaf templates for rendering HTML (e.g., `dashboard.html`, `orders.html`)
+### 1. Factory Pattern
+- **Implementation**: `UserFactoryManager` class
+- **Purpose**: Creates different types of users based on their role
+- **Usage**: 
+  ```java
+  // Creates a Customer user
+  User customer = userFactoryManager.createUser(UserRole.CUSTOMER, username, password, email);
+  // Creates a Restaurant user
+  User restaurant = userFactoryManager.createUser(UserRole.RESTAURANT, username, password, email);
+  ```
 
-### 2. Repository Pattern
-- Used for data access abstraction
-- Implemented through Spring Data JPA repositories
-- Examples: `UserRepository`, `RestaurantRepository`, `OrderRepository`
+### 2. Builder Pattern
+- **Implementation**: `OrderBuilder` class
+- **Purpose**: Constructs Order objects with multiple optional parameters
+- **Usage**:
+  ```java
+  Order order = new OrderBuilder()
+      .setCustomer(customer)
+      .setRestaurant(restaurant)
+      .setOrderItems(orderItems)
+      .setPaymentMethod(paymentMethod)
+      .build();
+  ```
 
-### 3. Service Layer Pattern
-- Business logic encapsulation
-- Transaction management
-- Examples: `UserService`, `OrderService`, `PaymentService`
+### 3. Facade Pattern
+- **Implementation**: `OrderProcessingFacade` class
+- **Purpose**: Provides a simplified interface to the complex order processing subsystem
+- **Usage**:
+  ```java
+  // Handles the entire order process in one call
+  orderProcessingFacade.processOrder(customer, restaurant, items, paymentMethod);
+  ```
 
-### 4. Factory Pattern
-- Used in `UserFactoryManager` for creating different types of users
-- Encapsulates user creation logic based on role
+### 4. Adapter Pattern
+- **Implementation**: `PaymentGatewayAdapter` class
+- **Purpose**: Adapts different payment gateway interfaces to a common interface
+- **Usage**:
+  ```java
+  // Adapts different payment gateways to a common interface
+  PaymentGatewayAdapter adapter = new PaymentGatewayAdapter(paymentGateway);
+  PaymentResult result = adapter.processPayment(order);
+  ```
 
-### 5. Observer Pattern
-- Implemented for notifications
-- `NotificationService` observes order events and notifies relevant users
+## Class Diagram
+```
++----------------+       +----------------+       +----------------+
+|     User       |       |   Restaurant   |       |    Order       |
++----------------+       +----------------+       +----------------+
+| -id: Long      |       | -id: Long      |       | -id: Long      |
+| -username: String|     | -name: String  |       | -status: String|
+| -password: String|     | -address: String|      | -totalAmount: Double|
+| -email: String |       | -phone: String |       | -orderDate: Date|
+| -role: UserRole|       | -isActive: Boolean|    | -customer: User|
++----------------+       +----------------+       | -restaurant: Restaurant|
+       |                        |                 | -orderItems: List<OrderItem>|
+       |                        |                 +----------------+
+       |                        |                         |
+       |                        |                         |
+       v                        v                         v
++----------------+       +----------------+       +----------------+
+|  UserFactory   |       |   MenuItem     |       |  OrderItem     |
++----------------+       +----------------+       +----------------+
+| +createUser()  |       | -id: Long      |       | -id: Long      |
++----------------+       | -name: String  |       | -quantity: Integer|
+                        | -price: Double |       | -menuItem: MenuItem|
+                        | -description: String|   | -order: Order   |
+                        +----------------+       +----------------+
+                               |
+                               |
+                               v
+                        +----------------+
+                        |   Payment      |
+                        +----------------+
+                        | -id: Long      |
+                        | -amount: Double|
+                        | -status: String|
+                        | -order: Order  |
+                        +----------------+
 
-### 6. Strategy Pattern
-- Used in recommendation system
-- Different recommendation strategies based on user preferences and item popularity
-
-### 7. Session Management Pattern
-- User authentication and authorization
-- Storing user context in HTTP session
-
-### 8. Command Pattern
-- Used for order processing
-- Encapsulates order creation and payment processing
+Relationships:
+- User 1 --- * Order (One user can have many orders)
+- Restaurant 1 --- * MenuItem (One restaurant can have many menu items)
+- Order 1 --- * OrderItem (One order can have many order items)
+- MenuItem 1 --- * OrderItem (One menu item can be in many order items)
+- Order 1 --- 1 Payment (One order has one payment)
+```
 
 ## Architecture
 
