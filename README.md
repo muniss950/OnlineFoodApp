@@ -47,6 +47,81 @@ A Spring Boot-based food delivery application that allows customers to order foo
   PaymentResult result = adapter.processPayment(order);
   ```
 
+## SOLID Principles Implementation
+
+### 1. Single Responsibility Principle (SRP)
+- `UserFactoryManager`: Solely responsible for user creation
+- `OrderService`: Focused on order-related operations
+- `PaymentService`: Dedicated to payment processing
+- `NotificationService`: Handles only notification management
+
+### 2. Open/Closed Principle (OCP)
+- `UserFactory`: Extensible for new user types without modification
+- `RecommendationStrategy`: Interface allowing new recommendation algorithms
+- `PaymentGatewayAdapter`: Extensible for new payment gateways
+
+### 3. Liskov Substitution Principle (LSP)
+- User types (Customer, Restaurant, DeliveryAgent) are substitutable
+- Recommendation strategies are interchangeable
+- Payment methods can be substituted through adapter pattern
+
+### 4. Interface Segregation Principle (ISP)
+- `RecommendationStrategy`: Focused interface for recommendations
+- `PaymentGateway`: Specific interface for payment processing
+- `UserFactory`: Minimal interface for user creation
+
+### 5. Dependency Inversion Principle (DIP)
+- Services depend on abstractions (interfaces)
+- Controllers depend on service interfaces
+- Factory pattern implementation follows DIP
+
+## GRASP Principles Implementation
+
+### 1. Information Expert
+- `OrderService`: Expert in order processing
+- `UserService`: Expert in user management
+- `PaymentService`: Expert in payment processing
+
+### 2. Creator
+- `UserFactoryManager`: Creates User objects
+- `OrderService`: Creates Order objects
+- `PaymentService`: Creates Payment objects
+
+### 3. Controller
+- Controllers handle HTTP requests and delegate to services
+- `OrderController`: Manages order-related requests
+- `CustomerController`: Handles customer operations
+
+### 4. Low Coupling
+- Services are loosely coupled through interfaces
+- Factory pattern reduces coupling in user creation
+- Adapter pattern decouples payment gateways
+
+### 5. High Cohesion
+- `UserFactoryManager`: High cohesion in user creation
+- `OrderService`: High cohesion in order operations
+- `PaymentService`: High cohesion in payment processing
+
+### 6. Polymorphism
+- User types polymorphism
+- Recommendation strategies polymorphism
+- Payment gateway adapter polymorphism
+
+### 7. Pure Fabrication
+- `UserFactoryManager` as pure fabrication
+- Service classes as pure fabrications
+- Adapter classes as pure fabrications
+
+### 8. Indirection
+- Service layer provides indirection
+- Factory pattern provides creation indirection
+- Adapter pattern provides external system indirection
+
+### 9. Protected Variations
+- Factory pattern protects user creation variations
+- Strategy pattern protects recommendation variations
+- Adapter pattern protects payment gateway variations
+
 ## Class Diagram
 ```
 +----------------+       +----------------+       +----------------+
